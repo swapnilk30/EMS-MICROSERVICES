@@ -1,12 +1,17 @@
-#Development Profile (Eureka Disabled)
+# Development (Eureka DISABLED)
 
 spring:
+  config:
+    activate:
+      on-profile: dev
+    # Database Configuration - Development   
   datasource:
-    url: jdbc:mysql://localhost:3306/ems_dev
+    url: jdbc:mysql://localhost:3306/address_dev
     username: root
     password: Skmania@1234
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+    
+    
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,7 +20,7 @@ spring:
       hibernate:
         format_sql: true
 
-
+        
 # Disable Eureka Client for Development
 eureka:
   client:
@@ -29,11 +34,6 @@ eureka:
   cloud:
     discovery:
       enabled: false
-      
-# Feign Client Configuration (use URLs directly)
-address:
-  service:
-    url: http://localhost:8083
     
 # Actuator
 management:
@@ -44,4 +44,3 @@ management:
   endpoint:
     health:
       show-details: always
-    

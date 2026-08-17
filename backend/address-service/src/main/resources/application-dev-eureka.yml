@@ -1,0 +1,6 @@
+# Development with Eureka ENABLED
+
+spring:
+  config:
+    activate:
+      on-profile: dev-eureka
