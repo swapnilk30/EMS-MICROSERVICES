@@ -1,7 +1,32 @@
 spring:
   application:
     name: address-service
+    
+    
+  datasource:
+    url: jdbc:mysql://localhost:3306/address_dev
+    username: root
+    password: Skmania@1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
     
 server:
   port: 8082
+  
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - "*"
