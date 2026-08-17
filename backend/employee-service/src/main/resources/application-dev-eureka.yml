@@ -1,0 +1,57 @@
+spring:
+  config:
+    activate:
+      on-profile: dev-eureka
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/ems_dev
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+
+# Enable Eureka for development testing
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    healthcheck:
+      enabled: true
+    registry-fetch-interval-seconds: 5
+    instance-info-replication-interval-seconds: 10
+  
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
+    instance-id: ${spring.application.name}:${server.port}
+
+
+  cloud:
+    discovery:
+      enabled: true
+    loadbalancer:
+      enabled: true
+
+# Feign will use service discovery (no URL needed)
+address:
+  service:
+    url:  # Leave empty to use discovery
+
+logging:
+  level:
+    com.netflix.discovery: DEBUG
+    com.netflix.eureka: DEBUG
+    org.springframework.cloud.netflix.eureka: DEBUG
