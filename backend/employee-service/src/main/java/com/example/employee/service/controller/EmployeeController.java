@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.common.lib.response.ApiResponse;
 import com.example.employee.service.client.AddressServiceClient;
 import com.example.employee.service.dto.EmployeeDto;
 import com.example.employee.service.service.EmployeeService;
@@ -70,6 +71,17 @@ public class EmployeeController {
 	public void getAddressPing(){
 		String ping = addressServiceClient.ping();
 		System.out.println(ping);
+	}
+	
+	
+	@GetMapping("/hello")
+	public ApiResponse<String> hello() {
+
+	    return new ApiResponse<>(
+	            true,
+	            "Auth Service is running",
+	            "Hello from Employee Service"
+	    );
 	}
 
 }
