@@ -4,9 +4,9 @@ spring:
     
     
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}  # Default to dev
+    active: ${SPRING_PROFILES_ACTIVE:dev-eureka}  # Default to dev
  
  
 # Common configurations
 server:
-  port: 8082      
+  port: 9093  
