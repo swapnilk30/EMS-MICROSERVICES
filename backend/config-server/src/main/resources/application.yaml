@@ -1,3 +1,17 @@
+server:
+  port: 8888
+
 spring:
   application:
     name: config-server
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/swapnilk30/ems-config-repo.git
+          default-label: master
+          clone-on-start: true
+          search-paths:
+            - '{application}'
+            - ''
