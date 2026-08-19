@@ -51,4 +51,12 @@ public class AddressServiceImpl implements AddressService{
 		return addressDtos;
 	}
 
+	@Override
+	public List<AddressDto> getAddressByEmpId(Long empId) {
+		log.info("Fetching addresses by empId : {}", empId);
+		List<Address> addressByEmpId = addressRepository.findAllByEmpId(empId);
+		List<AddressDto> addressDtos = addressByEmpId.stream().map(adr -> mapper.map(adr, AddressDto.class)).collect(Collectors.toList());
+		return addressDtos ;
+	}
+
 }

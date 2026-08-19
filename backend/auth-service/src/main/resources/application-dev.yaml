@@ -2,7 +2,7 @@
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/ems_dev
+    url: jdbc:mysql://localhost:3306/auth_dev
     username: root
     password: Skmania@1234
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -29,19 +29,9 @@ eureka:
   cloud:
     discovery:
       enabled: false
-      
-# Feign Client Configuration (use URLs directly)
-address:
-  service:
-    url: http://localhost:8082
     
-# Actuator
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,loggers
-  endpoint:
-    health:
-      show-details: always
+
     
+jwt:
+  secret: myVerySecretKeyForJwtAuthentication123456789
+  expiration: 3600000

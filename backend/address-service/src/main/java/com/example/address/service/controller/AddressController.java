@@ -44,6 +44,12 @@ public class AddressController {
     	return ResponseEntity.ok(allAddress);
     	
     }
+    
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+    	throw new RuntimeException("Exception Occur");
+       // return ResponseEntity.ok("Address service is running");
+    }
 
 
 }
