@@ -8,18 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ErrorResponse {
 
-	private LocalDateTime timestamp;
-	private int status;
-	private String error;
+	private boolean success;
 	private String message;
-	private String path;
+	private String errorCode;
+	private Object errors;
 
 }

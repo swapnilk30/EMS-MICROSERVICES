@@ -5,10 +5,30 @@ import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.example.employee.service.dto.ApiResponse;
+
 
 @FeignClient(name = "address-service",url = "${address.service.url}")
 public interface AddressServiceClient {
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	// ============================================
 	// HEALTH & MONITORING
