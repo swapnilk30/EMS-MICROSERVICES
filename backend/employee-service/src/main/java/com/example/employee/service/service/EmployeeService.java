@@ -22,4 +22,6 @@ public interface EmployeeService {
 	EmployeeDto restoreEmployee(Long id);
 
 	EmployeeDto patchEmployee(Long id, Map<String, Object> updates);
+	
+	EmployeeDto getByEmpCodeAndCompanyName(String empCode,String companyName);
 }

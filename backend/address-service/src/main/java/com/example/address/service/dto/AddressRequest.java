@@ -1,8 +1,11 @@
 package com.example.address.service.dto;
 
+import java.util.List;
 
 import com.example.address.service.entity.AddressType;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,18 +15,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressDto {
+public class AddressRequest {
 	
-	private Long id;
-	
-	private Long empId;
-
-	private String city;
-
-	private String state;
-
-	private String zipCode;
-	
-	private AddressType type;
+    private Long empId;
+    
+    private List<AddressRequestDto> addressRequestDtos;
 
 }

@@ -115,6 +115,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public EmployeeDto getByEmpCodeAndCompanyName(String empCode, String companyName) {
+		
+		Employee employee = employeeRepository.findByEmpCodeAndCompanyName(empCode, companyName)
+			.orElseThrow((() -> new ResourceNotFoundException("Employee not found with empCode : " + empCode + "companyName : "+companyName)));
+		
+		return mapper.map(employee, EmployeeDto.class);
+	}
 	
 	
 	

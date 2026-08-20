@@ -1,7 +1,10 @@
 package com.example.employee.service.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -12,11 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.common.lib.response.ApiResponse;
 import com.example.employee.service.client.AddressServiceClient;
 import com.example.employee.service.dto.EmployeeDto;
+import com.example.employee.service.exception.MissingParameterException;
 import com.example.employee.service.service.EmployeeService;
 
 
@@ -92,6 +97,41 @@ public class EmployeeController {
 				)
 		);
     }
+	
+	
+	@GetMapping("/get-by-empcode-empname")
+	public ResponseEntity<ApiResponse<EmployeeDto>> getByEmpCodeAndCompanyName(
+			@RequestParam(required = false) String empCode,
+			@RequestParam(required = false) String companyName){
+		
+		List<String> missingParams = new ArrayList<>();
+		
+		if(empCode == null || empCode.trim().isEmpty()) {
+			missingParams.add("empCode");	
+		}
+		if(companyName == null || companyName.trim().isEmpty()) {
+			missingParams.add("companyName");
+		}
+		
+		if(!missingParams.isEmpty()) {
+			String finalMessage = missingParams.stream().collect(Collectors.joining(","));
+			throw new MissingParameterException("Please provide : "+finalMessage);
+		}
+		
+		EmployeeDto employeeDto =  employeeService.getByEmpCodeAndCompanyName(empCode,companyName);
+		
+		ApiResponse<EmployeeDto> response = ApiResponse.success("Employee fetched successfully", employeeDto);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@GetMapping("/address-service/health")
 	public Map<String,Object> getAdrressHealth() {

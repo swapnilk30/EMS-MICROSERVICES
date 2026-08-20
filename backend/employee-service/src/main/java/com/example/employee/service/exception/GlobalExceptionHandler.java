@@ -39,6 +39,21 @@ public class GlobalExceptionHandler {
 				.status(HttpStatus.CONFLICT)
 				.body(errorResponse);
 	}
+	
+	@ExceptionHandler(MissingParameterException.class)
+	public ResponseEntity<ErrorResponse> handleMissingParameterException(
+			MissingParameterException ex) {
+
+		ErrorResponse errorResponse = ErrorResponse.builder()
+				.success(false)
+				.message(ex.getMessage())
+				.errorCode(ex.getErrorCode())
+				.build();
+
+		return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.body(errorResponse);
+	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> handleValidationExceptions(
