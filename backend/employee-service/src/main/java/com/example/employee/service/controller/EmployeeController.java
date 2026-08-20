@@ -32,9 +32,7 @@ public class EmployeeController {
 
 	private final EmployeeService employeeService;
 	private final AddressServiceClient addressServiceClient;
-	
-	
-	
+
     @Value("${application.message}")
     private String message;
 
@@ -43,37 +41,56 @@ public class EmployeeController {
         return message;
     }
     
-    
-    
-    
-    
+
 	
 	@PostMapping
-	public ResponseEntity<?> createEmployee(@Valid @RequestBody EmployeeDto employeeDto){
-		
-		log.info("Employee DTO: {}", employeeDto);
+	public ResponseEntity<ApiResponse<EmployeeDto>> createEmployee(@Valid @RequestBody EmployeeDto employeeDto){
 		
 		EmployeeDto response = employeeService.createEmployee(employeeDto);
-		
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+		ApiResponse<EmployeeDto> apiResponse =
+				ApiResponse.success("Employee created successfully", response);
+
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(apiResponse);
 	}
 
+	//update employee
+
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getEmployeeById(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse<EmployeeDto>> getEmployeeById(@PathVariable Long id) {
 		EmployeeDto response = employeeService.getEmployeeById(id);
-		return ResponseEntity.ok(response);
+
+		return ResponseEntity.ok(
+				ApiResponse.success(
+						"Employee fetched successfully",
+						response
+				)
+		);
 	}
 
 	@GetMapping
-	public ResponseEntity<?> getAllEmployees() {
+	public ResponseEntity<ApiResponse<List<EmployeeDto>>> getAllEmployees() {
 		List<EmployeeDto> responses = employeeService.getAllEmployees();
-		return ResponseEntity.ok(responses);
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(ApiResponse.success(
+						"Employees fetched successfully",
+						responses
+				));
+
 	}
 	
 	@DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
-        return ResponseEntity.noContent().build();
+		return ResponseEntity.ok(
+				ApiResponse.success(
+						"Employee deleted successfully",
+						null
+				)
+		);
     }
 
 	@GetMapping("/address-service/health")

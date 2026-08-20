@@ -4,13 +4,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.example.common.lib.exception.ResourceNotFoundException;
+import com.example.employee.service.exception.EmployeeAlreadyExistsException;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.example.employee.service.client.AddressServiceClient;
 import com.example.employee.service.dto.EmployeeDto;
 import com.example.employee.service.entity.Employee;
-import com.example.employee.service.exception.ResourceNotFoundException;
 import com.example.employee.service.repository.EmployeeRepository;
 import com.example.employee.service.service.EmployeeService;
 
@@ -26,13 +28,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private final ModelMapper mapper;
 
 	@Override
+	@Transactional
 	public EmployeeDto createEmployee(EmployeeDto employeeDto) {
 
-		log.info("Creating new employee with email: {}", employeeDto.getEmail());
+		log.info("Creating new employee");
+
+		String email = employeeDto.getEmail().trim().toLowerCase();
+		employeeDto.setEmail(email);
+
+		if (employeeRepository.existsByEmail(employeeDto.getEmail())) {
+			throw new EmployeeAlreadyExistsException(
+					"Employee already exists with email: " + employeeDto.getEmail()
+			);
+		}
 
 		Employee employee = mapper.map(employeeDto, Employee.class);
 
 		Employee savedEmployee = employeeRepository.save(employee);
+
 
 		log.info("Employee created successfully with ID: {}", savedEmployee.getEmpId());
 
@@ -41,8 +54,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public EmployeeDto updateEmployee(Long id, EmployeeDto employeeDto) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Employee existingEmployee = employeeRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + id));
+
+		existingEmployee.setFirstName(employeeDto.getFirstName());
+		existingEmployee.setLastName(employeeDto.getLastName());
+		existingEmployee.setEmail(employeeDto.getEmail());
+
+		Employee updatedEmployee = employeeRepository.save(existingEmployee);
+
+		return mapper.map(updatedEmployee, EmployeeDto.class);
 	}
 
 	@Override
@@ -68,7 +90,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public void deleteEmployee(Long id) {
-		// TODO Auto-generated method stub
+		log.info("Deleting employee with ID: {}", id);
+
+		Employee employee = employeeRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + id));
+		employeeRepository.delete(employee);
 
 	}
 
