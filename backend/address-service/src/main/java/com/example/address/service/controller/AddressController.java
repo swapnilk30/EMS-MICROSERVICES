@@ -2,6 +2,7 @@ package com.example.address.service.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,15 @@ import lombok.RequiredArgsConstructor;
 public class AddressController {
 	
 	private final AddressService addressService;
+	
+	
+    @Value("${application.message}")
+    private String message;
+
+    @GetMapping("/message")
+    public String getMessage() {
+        return message;
+    }
 	
     @PostMapping
     public ResponseEntity<?> createAddress(@Valid @RequestBody AddressDto addressDto) {
@@ -51,5 +61,6 @@ public class AddressController {
        // return ResponseEntity.ok("Address service is running");
     }
 
+    
 
 }

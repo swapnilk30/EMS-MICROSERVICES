@@ -1,0 +1,46 @@
+# Development (Eureka DISABLED)
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+    # Database Configuration - Development   
+  datasource:
+    url: jdbc:mysql://localhost:3306/address_dev
+    username: root
+    password: Skmania@1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    
+    
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+        
+# Disable Eureka Client for Development
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    prefer-ip-address: true
+ 
+# Disable Discovery Client
+  cloud:
+    discovery:
+      enabled: false
+    
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers
+  endpoint:
+    health:
+      show-details: always

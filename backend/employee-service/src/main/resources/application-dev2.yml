@@ -1,0 +1,34 @@
+#Development Profile (Eureka Disabled)
+
+
+
+
+# Disable Eureka Client for Development
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    prefer-ip-address: true
+ 
+# Disable Discovery Client
+  cloud:
+    discovery:
+      enabled: false
+      
+# Feign Client Configuration (use URLs directly)
+address:
+  service:
+    url: http://localhost:8082
+    
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers
+  endpoint:
+    health:
+      show-details: always
+    
