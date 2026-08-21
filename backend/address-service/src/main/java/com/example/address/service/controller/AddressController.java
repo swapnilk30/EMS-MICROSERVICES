@@ -76,7 +76,7 @@ public class AddressController {
 	}
 
 	@GetMapping("/get-address/{emp_id}")
-	public ResponseEntity<ApiResponse<List<AddressDto>>> getAddressByEmpId(Long emp_id) {
+	public ResponseEntity<ApiResponse<List<AddressDto>>> getAddressByEmpId(@PathVariable Long emp_id) {
 
 		List<AddressDto> addressByEmpId = addressService.getAddressByEmpId(emp_id);
 

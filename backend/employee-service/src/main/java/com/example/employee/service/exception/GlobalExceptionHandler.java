@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.example.common.lib.exception.AddressServiceUnavailableException;
+import com.example.common.lib.exception.EmployeeServiceUnavailableException;
 import com.example.common.lib.exception.ResourceNotFoundException;
 import com.example.common.lib.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -78,6 +80,16 @@ public class GlobalExceptionHandler {
 		return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
 				.body(response);
+	}
+	
+	
+	@ExceptionHandler(AddressServiceUnavailableException.class)
+	public ResponseEntity<ErrorResponse> handleEmployeeServiceUnavailable(AddressServiceUnavailableException ex) {
+
+		ErrorResponse response = ErrorResponse.builder().success(false).message(ex.getMessage())
+				.errorCode(ex.getErrorCode()).build();
+
+		return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
 	}
 
 }

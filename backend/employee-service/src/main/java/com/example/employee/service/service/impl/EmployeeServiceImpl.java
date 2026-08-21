@@ -1,16 +1,20 @@
 package com.example.employee.service.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.example.common.lib.exception.ResourceNotFoundException;
+import com.example.common.lib.response.ApiResponse;
 import com.example.employee.service.exception.EmployeeAlreadyExistsException;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.example.employee.service.client.AddressServiceClient;
+import com.example.employee.service.dto.AddressDto;
+import com.example.employee.service.dto.EmployeeDetailsDto;
 import com.example.employee.service.dto.EmployeeDto;
 import com.example.employee.service.entity.Employee;
 import com.example.employee.service.repository.EmployeeRepository;
@@ -26,6 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	private final EmployeeRepository employeeRepository;
 	private final ModelMapper mapper;
+	private final AddressServiceClient addressServiceClient;
 
 	@Override
 	@Transactional
@@ -37,15 +42,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employeeDto.setEmail(email);
 
 		if (employeeRepository.existsByEmail(employeeDto.getEmail())) {
-			throw new EmployeeAlreadyExistsException(
-					"Employee already exists with email: " + employeeDto.getEmail()
-			);
+			throw new EmployeeAlreadyExistsException("Employee already exists with email: " + employeeDto.getEmail());
 		}
 
 		Employee employee = mapper.map(employeeDto, Employee.class);
 
 		Employee savedEmployee = employeeRepository.save(employee);
-
 
 		log.info("Employee created successfully with ID: {}", savedEmployee.getEmpId());
 
@@ -73,18 +75,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		Employee employee = employeeRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + id));
-	
+
 		return mapper.map(employee, EmployeeDto.class);
 	}
 
 	@Override
 	public List<EmployeeDto> getAllEmployees() {
 		log.info("Fetching all employees");
-		
+
 		List<Employee> employees = employeeRepository.findAll();
-		
-		List<EmployeeDto> employeeDtos = employees.stream().map(emp -> mapper.map(emp, EmployeeDto.class)).collect(Collectors.toList());
-		
+
+		List<EmployeeDto> employeeDtos = employees.stream().map(emp -> mapper.map(emp, EmployeeDto.class))
+				.collect(Collectors.toList());
+
 		return employeeDtos;
 	}
 
@@ -118,17 +121,37 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public EmployeeDto getByEmpCodeAndCompanyName(String empCode, String companyName) {
-		
+
 		Employee employee = employeeRepository.findByEmpCodeAndCompanyName(empCode, companyName)
-			.orElseThrow((() -> new ResourceNotFoundException("Employee not found with empCode : " + empCode + "companyName : "+companyName)));
-		
+				.orElseThrow((() -> new ResourceNotFoundException(
+						"Employee not found with empCode : " + empCode + "companyName : " + companyName)));
+
 		return mapper.map(employee, EmployeeDto.class);
 	}
-	
-	
-	
-	
-	
-	
+
+	@Override
+	public EmployeeDetailsDto getEmployeeDetails(Long empId) {
+
+		log.info("Fetching employee details for employeeId={}", empId);
+
+		// 1. Get employee
+		Employee employee = employeeRepository.findById(empId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + empId));
+		// 2. Get addresses from Address Service
+		ApiResponse<List<AddressDto>> addressResponse = addressServiceClient.getAddressByEmpId(empId);
+
+		List<AddressDto> addresses = addressResponse != null && addressResponse.getData() != null
+				? addressResponse.getData()
+				: Collections.emptyList();
+		// 3. Combine Employee + Address
+		EmployeeDetailsDto employeeDetailsDto = EmployeeDetailsDto.builder()
+				.empId(employee.getEmpId())
+				.firstName(employee.getFirstName())
+				.lastName(employee.getLastName())
+				.email(employee.getEmail())
+				.addresses(addresses).build();
+		
+		return employeeDetailsDto;
+	}
 
 }
