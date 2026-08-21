@@ -8,13 +8,16 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.example.address.service.client.EmployeeServiceClient;
 import com.example.address.service.dto.AddressDto;
 import com.example.address.service.dto.AddressRequest;
 import com.example.address.service.dto.AddressRequestDto;
+import com.example.address.service.dto.EmployeeDto;
 import com.example.address.service.entity.Address;
 import com.example.address.service.repository.AddressRepository;
 import com.example.address.service.service.AddressService;
 import com.example.common.lib.exception.ResourceNotFoundException;
+import com.example.common.lib.response.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,7 @@ public class AddressServiceImpl implements AddressService {
 
 	private final AddressRepository addressRepository;
 	private final ModelMapper mapper;
+	private final EmployeeServiceClient employeeServiceClient; 
 
 	@Override
 	public AddressDto createAddress(AddressDto addressDto) {
@@ -69,8 +73,14 @@ public class AddressServiceImpl implements AddressService {
 
 	@Override
 	public List<AddressDto> createAddress(AddressRequest addressRequest) {
+		
+		ApiResponse<EmployeeDto> employeeById = employeeServiceClient.getEmployeeById(addressRequest.getEmpId());
+		
+		if(employeeById == null || employeeById.getData() == null) {
+			throw new ResourceNotFoundException("Employee Not Found with EmpID : "+addressRequest.getEmpId());
+		}
 
-		List<Address> addresses = this.saveOrUpdateAddressRequest(addressRequest);
+		List<Address> addresses = saveOrUpdateAddressRequest(addressRequest);
 
 		List<Address> savedAddresses = addressRepository.saveAll(addresses);
 
